@@ -42,10 +42,10 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_PORT }}
-          source: "dist/*"
-          target: "/var/www/scm-ui"
+          source: "dist"
+          target: "/tmp"
 
-      - name: Reload Nginx
+      - name: Install UI
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -53,4 +53,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_PORT }}
           script: |
+            cp -r /tmp/dist/* /var/www/scm-ui/
+            rm -rf /tmp/dist
             sudo systemctl reload nginx
